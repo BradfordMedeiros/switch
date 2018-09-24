@@ -7,8 +7,12 @@
 		getNextStates(state, transitions)
 
 		and an interface with added state so that you can say
+
+		// this probably should go in a seperate file
 		setInitialState(state)
 		getCurrentState()
 		getTransitions()
-		getNextStates(transitions)		
+		getNextStates(transitions)
+		callback for state transition
+
 */	
