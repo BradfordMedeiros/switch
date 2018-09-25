@@ -16,3 +16,11 @@
 		callback for state transition
 
 */	
+
+package statelessmachine
+
+import "fmt"
+		
+func Test(){
+	fmt.Println("test")
+}
