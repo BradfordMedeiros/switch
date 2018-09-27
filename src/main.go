@@ -17,7 +17,7 @@ func main(){
 	machine.AddState("wet", "dry", "airdry")
 	machine.AddState("dry", "wet", "rain")
 
-	handleQuery := query.GetHandleQuery(machine.GetState)
+	handleQuery := query.GetHandleQuery(machine.GetState, machine.GetTransitions)
 
 	commandChannel := make(chan string) 
 		go input.StartRepl(commandChannel)

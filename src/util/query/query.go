@@ -20,12 +20,19 @@ import "fmt"
 // : before command is a query 
 // else it should be interpreted as code
 
-func GetHandleQuery(getState func() string) func(string){
+func GetHandleQuery(getState func() (string, error), getTransitions func() ([]string, error)) func(string){
 	return func(queryString string){
-		if (queryString == ":state"){
-			fmt.Println(getState())
-		}else if (queryString == ":transitions"){
+		if (queryString == ":s" || queryString == ":state"){
+			state, error := getState()
+			if error != nil {
+				fmt.Println(error)
+				return
+			}
+			fmt.Println(state)
+		}else if (queryString == ":t" || queryString == ":transitions"){
 			fmt.Println("get transitions")
+			transitions, _ := getTransitions()
+			fmt.Println(transitions)
 		}else{
 			fmt.Println("unknown query " + queryString)
 		}
