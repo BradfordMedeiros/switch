@@ -1,6 +1,5 @@
 package main
 
-import "fmt"
 import "./util/input"
 import "./util/query"
 import "./util/statemachine"
@@ -8,8 +7,6 @@ import "./util/statemachine"
 
 
 func main(){
-	fmt.Println("hello")
-
 	machine := statemachine.New()
 
 	machine.AddState("wet", "frozen", "freeze")		
@@ -17,7 +14,11 @@ func main(){
 	machine.AddState("wet", "dry", "airdry")
 	machine.AddState("dry", "wet", "rain")
 
-	handleQuery := query.GetHandleQuery(machine.GetState, machine.GetTransitions)
+	handleQuery := query.GetHandleQuery(
+		machine.GetState, 
+		machine.GetTransitions,
+		machine.Transition,
+	)
 
 	commandChannel := make(chan string) 
 		go input.StartRepl(commandChannel)

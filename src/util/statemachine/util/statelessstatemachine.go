@@ -20,7 +20,6 @@
 
 package statelessmachine
 
-import "fmt"
 import "errors"
 	
 type State struct {
@@ -60,11 +59,18 @@ func (machine *StatelessMachine) AddState(stateFrom string, stateTo string, tran
 	stateFromState.reachableStates[transitionName] = &stateToAdd
 	return nil
 }
+func (machine *StatelessMachine) GetStateForTransition(stateFrom string, transitionName string) (string, error){
+	state, hasState := machine.states[stateFrom]
+	if !hasState {
+		return "", errors.New("not valid state " + stateFrom)
+	}
 
-func (machine *StatelessMachine) GetState() string{
-	return "placeholder state"
-}
-
+	destState, hasTransition := state.reachableStates[transitionName]
+	if !hasTransition {
+		return "", errors.New("no transition for " + stateFrom + " to " + transitionName)
+	}
+	return destState.statename, nil
+} 
 func (machine *StatelessMachine) GetTransitions(stateFrom string) ([]string, error){
 	state, hasState := machine.states[stateFrom]
 
@@ -79,10 +85,13 @@ func (machine *StatelessMachine) GetTransitions(stateFrom string) ([]string, err
 
 	return keys, nil
 }
-func (machine *StatelessMachine) Transition() bool {
-	return false
-}
 
-func Test(){
-	fmt.Println("wow")
+func (machine *StatelessMachine) HasTransition (stateFrom string, transition string) (bool, error) {
+	state, hasState := machine.states[stateFrom]
+	if !hasState {
+		return false, errors.New("not valid state " + stateFrom)
+	}
+
+	_, hasTransition := state.reachableStates[transition]
+	return hasTransition, nil
 }

@@ -31,6 +31,16 @@ func (machine *StateMachine) GetState() (string, error){
 func (machine *StateMachine) GetTransitions() ([]string, error){
 	return machine.statelessmachine.GetTransitions(*machine.currentState)
 }
-func (machine *StateMachine) Transition() bool {
-	return false
+func (machine *StateMachine) Transition(transitionName string) error {
+	hasTransition, err := machine.statelessmachine.HasTransition(*machine.currentState, transitionName)
+	if err != nil {
+		return err
+	}
+	if hasTransition {
+		stateName, _ := machine.statelessmachine.GetStateForTransition(*machine.currentState, transitionName)
+		machine.currentState = &stateName
+	}else{
+		return errors.New("no transition of that type " + transitionName + " for " + *machine.currentState)
+	}
+	return nil
 }

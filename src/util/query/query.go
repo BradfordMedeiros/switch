@@ -16,12 +16,20 @@
 package query 
 
 import "fmt"
+import "strings"
 
 // : before command is a query 
 // else it should be interpreted as code
 
-func GetHandleQuery(getState func() (string, error), getTransitions func() ([]string, error)) func(string){
-	return func(queryString string){
+func GetHandleQuery(
+	getState func() (string, error), 
+	getTransitions func() ([]string, error),
+	transition func(string) error,
+) func(string){
+	return func(mainQueryString string){
+		parts := strings.Split(mainQueryString, " ")
+		queryString := parts[0]
+
 		if (queryString == ":s" || queryString == ":state"){
 			state, error := getState()
 			if error != nil {
@@ -30,9 +38,16 @@ func GetHandleQuery(getState func() (string, error), getTransitions func() ([]st
 			}
 			fmt.Println(state)
 		}else if (queryString == ":t" || queryString == ":transitions"){
-			fmt.Println("get transitions")
 			transitions, _ := getTransitions()
 			fmt.Println(transitions)
+		}else if (queryString == ":m" || queryString == "move"){
+			transitionState := parts[1]
+			err := transition(transitionState)
+			if err != nil {
+				fmt.Println("error ", err)
+			}else{
+				fmt.Println("ok")
+			}
 		}else{
 			fmt.Println("unknown query " + queryString)
 		}
