@@ -41,7 +41,6 @@ func main(){
 
 	machine := createBackendForProgram(programStructure)
 	
-
 	handleQuery := query.GetHandleQuery(
 		machine.GetState, 
 		machine.GetTransitions,
