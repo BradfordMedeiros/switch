@@ -24,7 +24,9 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 		return statemachine.StateMachine{}, errors.New("invalid program structure")
 	}
 
-	machine := statemachine.New()
+	machine := statemachine.New(func(newstate string) {
+		fmt.Println("statechange: ", newstate)
+	})
 
 	for _, rule := range(programStructure.Rules){
 		fmt.Println("rule: ", rule)

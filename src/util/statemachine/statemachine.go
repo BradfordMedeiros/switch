@@ -5,12 +5,14 @@ import "errors"
 type StateMachine struct {
 	statelessmachine statelessmachine.StatelessMachine
 	currentState *string
+	onStateChanged func(string)
 } 
 
-func New() StateMachine{
+func New(onStateChanged func(string)) StateMachine{
 	return StateMachine { 
 		statelessmachine: statelessmachine.New(),
 		currentState: nil,
+		onStateChanged: onStateChanged,
 	}
 }
 
@@ -39,6 +41,7 @@ func (machine *StateMachine) Transition(transitionName string) error {
 	if hasTransition {
 		stateName, _ := machine.statelessmachine.GetStateForTransition(*machine.currentState, transitionName)
 		machine.currentState = &stateName
+		machine.onStateChanged(*machine.currentState)
 	}else{
 		return errors.New("no transition of that type " + transitionName + " for " + *machine.currentState)
 	}
