@@ -1,20 +1,20 @@
 
 - Grammar 
-
-( wet -> dry ) : airdry
-( dry -> wet ) : rain
-( wet -> frozen) : freeze
+ 
+( wet -> dry ) : airdry              --> rule --> statement
+( dry -> wet ) : rain 	
+(wet -> frozen) : freeze
 (frozen -> wet) : met
 
-start as wet
-exit 1 when wet
-exit 0 when dry
-when - dry the wet : someexternalevent
+start as wet						--> start --> statement
+exit 1 when wet						
+exit 0 when dry							--> exit
+when - dry the wet : someexternalevent	--> hook --> statement
 
 
 grammar:
 
-string: a-z, A-Z
+string: a-z, a-z
 axiom: 1+ :string
 axiom: 1+ :axiom
 

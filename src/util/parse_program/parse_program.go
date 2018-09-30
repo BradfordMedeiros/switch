@@ -1,16 +1,16 @@
-
 package parse_program
+import "strings"
+import "fmt"
+import "./util/filter"
+import "./util/types"
+import "./util/keywords"
 
-/*
-	(thing -> go) : wow   # statement (no label)
-	(wow->yo):yes
-//
-	when - dry the wet : someexternalevent  #statement
-	start as wet 	# start
-
-	exit 0 when frozen #exit statement
-	exit 1 when airdry #exit statement
-*/
+type TokenUnion struct {
+	rule types.Rule
+	hook types.Hook
+	start types.Start
+	exit types.Exit
+}
 
 type Token struct {
 	value string
@@ -22,26 +22,46 @@ type ProgramStructure struct {
 	Units []Unit
 	Valid bool
 }
-
-// @todo implement
 func tokenize(program string) []Token {
 	tokens := make([]Token, 0)
+	lines := strings.Split(program, "\n")
+
+	for _, line := range(lines){
+		lineToAdd := filter.Filter(line, func(char rune) bool {
+			return char != ' '
+		})
+		if len(lineToAdd) > 0 {
+			fmt.Println(lineToAdd)
+			tokens = append(tokens, Token { value: lineToAdd })
+		}
+	}
 	return tokens
 }
 
-// @todo implement
-func parseToken(token Token) Unit {
-	return Unit { unitType: "test" }
+
+func getTryParseStatement(tryParseExit func(string) (types.Exit, bool)) func(token Token)(Unit, bool){
+	tryParseStatement := func(token Token) (Unit, bool) {
+		return Unit { unitType: "statement" }, true
+	}
+	return tryParseStatement
 }
 
 
 
 func ParseProgram(program string) ProgramStructure {
+	fmt.Println("parse program--------")
+	parseExit := types.GetTryParseExit(keywords.IsValidSymbol)
+	tryParseStatement := getTryParseStatement(parseExit)
+
 	tokens := tokenize(program)
 
 	units := make([]Unit, len(tokens))
 	for _, token := range(tokens){
-		units = append(units, parseToken(token))
+		unit, isValid := tryParseStatement(token)
+		if !isValid {
+			return  ProgramStructure { Valid: false, Units: units }
+		}
+		units = append(units, unit)
 	}
 
 	programStructure := ProgramStructure { Valid: true, Units: units }
