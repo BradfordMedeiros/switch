@@ -1,22 +1,17 @@
 package parse_program
 import "strings"
 import "fmt"
-import "./util/filter"
 import "./util/types"
-import "./util/keywords"
-
-type TokenUnion struct {
-	rule types.Rule
-	hook types.Hook
-	start types.Start
-	exit types.Exit
-}
 
 type Token struct {
 	value string
 }
 type Unit struct {
 	unitType string 
+	rule types.Rule
+	hook types.Hook
+	start types.Start
+	exit types.Exit
 }
 type ProgramStructure struct {
 	Units []Unit
@@ -27,9 +22,7 @@ func tokenize(program string) []Token {
 	lines := strings.Split(program, "\n")
 
 	for _, line := range(lines){
-		lineToAdd := filter.Filter(line, func(char rune) bool {
-			return char != ' '
-		})
+		lineToAdd := strings.Trim(line, " ")
 		if len(lineToAdd) > 0 {
 			fmt.Println(lineToAdd)
 			tokens = append(tokens, Token { value: lineToAdd })
@@ -39,26 +32,43 @@ func tokenize(program string) []Token {
 }
 
 
-func getTryParseStatement(tryParseExit func(string) (types.Exit, bool)) func(token Token)(Unit, bool){
-	tryParseStatement := func(token Token) (Unit, bool) {
-		return Unit { unitType: "statement" }, true
+func parseStatement(token Token)(Unit, bool){
+	rule, isValidRule := types.TryParseRule(token.value)
+	if isValidRule {
+		return Unit { unitType: "rule", rule: rule }, true
 	}
-	return tryParseStatement
+
+	hook, isValidHook := types.TryParseHook(token.value)
+	if isValidHook {
+		return Unit { unitType: "hook", hook: hook }, true
+	}
+
+	exit, isValidExit := types.TryParseExit(token.value) 
+	if isValidExit {
+		return Unit { unitType: "exit", exit: exit }, true
+	}
+
+	start, isValidStart := types.TryParseStart(token.value)
+	if isValidStart {
+		return Unit { unitType: "start", start: start }, true
+	}
+
+	return Unit { unitType: "none" }, false
 }
 
 
 
 func ParseProgram(program string) ProgramStructure {
 	fmt.Println("parse program--------")
-	parseExit := types.GetTryParseExit(keywords.IsValidSymbol)
-	tryParseStatement := getTryParseStatement(parseExit)
 
 	tokens := tokenize(program)
 
 	units := make([]Unit, len(tokens))
 	for _, token := range(tokens){
-		unit, isValid := tryParseStatement(token)
+		unit, isValid := parseStatement(token)
 		if !isValid {
+			fmt.Println("invalid program! exiting")
+			fmt.Println("--> ", token.value)
 			return  ProgramStructure { Valid: false, Units: units }
 		}
 		units = append(units, unit)

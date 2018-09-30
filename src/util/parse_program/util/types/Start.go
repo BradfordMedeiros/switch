@@ -4,6 +4,6 @@ type Start struct {
 
 }
 
-func tryParseStart(value string) (Start, bool){
-	return Start{ }, true
+func TryParseStart(value string) (Start, bool){
+	return Start{ }, false
 }

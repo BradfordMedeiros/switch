@@ -1,5 +1,4 @@
-package keywords
-
+package common
 /*func isKeyword(wordstring) bool {
     switch category {
     case 
