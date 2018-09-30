@@ -44,3 +44,11 @@ func (machine *StateMachine) Transition(transitionName string) error {
 	}
 	return nil
 }
+func (machine *StateMachine) ForceTransitionState(transitionName string) error {
+	if machine.statelessmachine.HasState(transitionName) {
+		machine.currentState = &transitionName
+		return nil
+	}else{
+		return errors.New("no state named " + transitionName)
+	}
+}

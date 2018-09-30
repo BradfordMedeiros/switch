@@ -9,11 +9,11 @@ import "./common"
 // (wet -> frozen) : somelabelhere - freeze
 
 type Rule struct {
-	fromState string
-	toState string
-	transition string
-	hasLabel bool
-	label string  
+	FromState string
+	ToState string
+	Transition string
+	HasLabel bool
+	Label string  
 }
 
 
@@ -68,11 +68,11 @@ func TryParseRule(value string) (Rule, bool){
 	}
 
 	rule := Rule { 
-		fromState: ls.fromState, 
-		toState: ls.toState, 
-		transition: rs.transition, 
-		label: rs.label,
-		hasLabel: rs.hasLabel,
+		FromState: ls.fromState, 
+		ToState: ls.toState, 
+		Transition: rs.transition, 
+		Label: rs.label,
+		HasLabel: rs.hasLabel,
 	}
 	return rule, true
 }

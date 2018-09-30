@@ -95,3 +95,8 @@ func (machine *StatelessMachine) HasTransition (stateFrom string, transition str
 	_, hasTransition := state.reachableStates[transition]
 	return hasTransition, nil
 }
+
+func (machine *StatelessMachine) HasState (state string) bool {
+	_, hasState := machine.states[state]
+	return hasState
+}

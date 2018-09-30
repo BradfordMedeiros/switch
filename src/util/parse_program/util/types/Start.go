@@ -3,7 +3,7 @@ import "strings"
 import "./common"
 
 type Start struct {
-	state string
+	State string
 }
 
 // start as somestate
@@ -23,5 +23,5 @@ func TryParseStart(value string) (Start, bool){
 		return Start{}, false
 	}
 
-	return Start{ state: values[2] }, true
+	return Start{ State: values[2] }, true
 }

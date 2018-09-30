@@ -7,16 +7,22 @@ type Token struct {
 	value string
 }
 type Unit struct {
-	unitType string 
-	rule types.Rule
+	UnitType string 
+	Rule types.Rule
 	hook types.Hook
-	start types.Start
-	exit types.Exit
+	Start types.Start
+	Exit types.Exit
 }
-type ProgramStructure struct {
-	Units []Unit
+type Program struct {
 	Valid bool
+	Rules []types.Rule
+	Hooks []types.Hook
+	Exits []types.Exit
+
+	Start types.Start
+	HasStart bool
 }
+
 func tokenize(program string) []Token {
 	tokens := make([]Token, 0)
 	lines := strings.Split(program, "\n")
@@ -30,45 +36,71 @@ func tokenize(program string) []Token {
 	return tokens
 }
 
-
 func parseStatement(token Token)(Unit, bool){
 	rule, isValidRule := types.TryParseRule(token.value)
 	if isValidRule {
-		return Unit { unitType: "rule", rule: rule }, true
+		return Unit { UnitType: "rule", Rule: rule }, true
 	}
 
 	hook, isValidHook := types.TryParseHook(token.value)
 	if isValidHook {
-		return Unit { unitType: "hook", hook: hook }, true
+		return Unit { UnitType: "hook", hook: hook }, true
 	}
 
 	exit, isValidExit := types.TryParseExit(token.value) 
 	if isValidExit {
-		return Unit { unitType: "exit", exit: exit }, true
+		return Unit { UnitType: "exit", Exit: exit }, true
 	}
 
 	start, isValidStart := types.TryParseStart(token.value)
 	if isValidStart {
-		return Unit { unitType: "start", start: start }, true
+		return Unit { UnitType: "start", Start: start }, true
 	}
 
-	return Unit { unitType: "none" }, false
+	return Unit { UnitType: "none" }, false
 }
 
-
-
-func ParseProgram(program string) ProgramStructure {
+func ParseProgram(program string) Program{
 	tokens := tokenize(program)
-	units := make([]Unit, len(tokens))
+
+	var start types.Start
+	hasStart := false
+
+	units := make([]Unit, 0)
+	rules := make([]types.Rule, 0)
+	hooks := make([]types.Hook, 0)		// todo hooks
+	exits := make([]types.Exit, 0)
+
+	fmt.Println("num tokens: ", len(tokens))
 	for _, token := range(tokens){
 		unit, isValid := parseStatement(token)
+		
+		if unit.UnitType == "rule" {
+			rules = append(rules, unit.Rule)
+		}else if unit.UnitType == "exit" {
+			exits = append(exits, unit.Exit)
+		}else if unit.UnitType == "start" {
+			start = unit.Start
+			hasStart = true
+		}
+
+
 		if !isValid {
 			fmt.Println("invalid program! exiting: (", token.value, ")")
-			return  ProgramStructure { Valid: false, Units: units }
+			return  Program { Valid: false }
+		}else{
+			units = append(units, unit)
 		}
-		units = append(units, unit)
 	}
 
-	programStructure := ProgramStructure { Valid: true, Units: units }
+	programStructure := Program {
+		Valid: true, 
+		Start: start,
+		HasStart: hasStart,
+		Exits: exits, 
+		Rules: rules, 
+		Hooks: hooks, 
+	}
+
 	return programStructure
 }
