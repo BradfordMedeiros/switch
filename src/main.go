@@ -12,23 +12,29 @@ import "./util/statemachine"
 import "./util/parse_program"
 import "./util/parse_program/util/types"
 
+func getHasEvent(hooks []types.Hook) (getEventForLabel func(types.Rule) (bool, string)){
+	doGetEventForLabel := func(rule types.Rule) (bool, string){
+		fmt.Println("--")
+		for _, hook := range(hooks) {
+			if hook.Label == rule.Label {
+				return true, hook.Event
+			}
+		}
+		return false, ""
+	}
+	return  doGetEventForLabel
+}
+
 func generateHookChangeMap(rules []types.Rule, hooks []types.Hook) map[string]map[string][]string{
 	hookchange := make(map[string]map[string][]string)
-
-	// [fromState][toState] => label
-	// label => eventname 
-	// gets
-	// [fromState][toState] => [] eventname
-
-	// creating mapping based on hook transitions
-	// but the associated rule label is the only ones we should care about
-	// so the string at the end probably should be array assocated rule labels
+	hasEvent := getHasEvent(hooks)
 
 	for _, rule := range(rules){
-		fmt.Println("creating?")
+		hasEventHook, eventHookName := hasEvent(rule)
+		if !hasEventHook {
+			continue
+		}
 		if rule.HasLabel {
-			fmt.Println("adding label: ", rule.Label)
-
 			if hookchange[rule.FromState] == nil {
 				hookchange[rule.FromState] = make(map[string][]string)
 			}
@@ -38,7 +44,7 @@ func generateHookChangeMap(rules []types.Rule, hooks []types.Hook) map[string]ma
 
 			hookchange[rule.FromState][rule.ToState] = append(
 				hookchange[rule.FromState][rule.ToState],
-				rule.Label, // this should really be the events not the labels
+				eventHookName, 
 			)
 		}
 	}
@@ -49,17 +55,16 @@ func getHandleHookChange(
 	hooks []types.Hook, 
 	rules []types.Rule, 
 	exits []types.Exit,
-	callLabel func(string),
+	callEvent func(string),
 	exitFunc func(code int),
 ) func(string, string) {
 	hookChangeMap := generateHookChangeMap(rules, hooks)
-
 	hookChange := func(laststate string, newstate string) {
 		if hookChangeMap[laststate] !=nil {
 			labels, hasMapping := hookChangeMap[laststate][newstate]
 			if hasMapping {
 				for _, label := range(labels){
-					callLabel(label)
+					callEvent(label)
 				}
 			}
 		}
@@ -84,8 +89,8 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 		programStructure.Hooks,
 		programStructure.Rules, 
 		programStructure.Exits,
-		func(label string) {
-			fmt.Println("call label (should be event): ", label)
+		func(event string) {
+			fmt.Println("call label (should be event): ", event)
 		},
 		func(code int){
 			fmt.Println("exit with code: ", code)
@@ -94,13 +99,10 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 	))
 
 	for _, rule := range(programStructure.Rules){
-		fmt.Println("rule: ", rule)
 		machine.AddState(rule.FromState, rule.ToState, rule.Transition)
 	}
 	
 	if programStructure.HasStart {
-		fmt.Println("has start: ", programStructure.HasStart)
-		fmt.Println("start: ", programStructure.Start)
 		err := machine.ForceTransitionState(programStructure.Start.State)
 		if err != nil {
 			fmt.Println("error from starting")

@@ -10,3 +10,4 @@ exit 0 when dry
 (frozen -> wet) : met
 
 
+when - something - someexternalevent

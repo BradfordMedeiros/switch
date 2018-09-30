@@ -9,7 +9,7 @@ type Token struct {
 type Unit struct {
 	UnitType string 
 	Rule types.Rule
-	hook types.Hook
+	Hook types.Hook
 	Start types.Start
 	Exit types.Exit
 }
@@ -44,7 +44,7 @@ func parseStatement(token Token)(Unit, bool){
 
 	hook, isValidHook := types.TryParseHook(token.value)
 	if isValidHook {
-		return Unit { UnitType: "hook", hook: hook }, true
+		return Unit { UnitType: "hook", Hook: hook }, true
 	}
 
 	exit, isValidExit := types.TryParseExit(token.value) 
@@ -80,6 +80,8 @@ func ParseProgram(program string) Program{
 		
 		if unit.UnitType == "rule" {
 			rules = append(rules, unit.Rule)
+		}else if unit.UnitType == "hook" {
+			hooks = append(hooks, unit.Hook)
 		}else if unit.UnitType == "exit" {
 			exits = append(exits, unit.Exit)
 		}else if unit.UnitType == "start" {
