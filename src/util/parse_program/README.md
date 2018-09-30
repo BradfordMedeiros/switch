@@ -3,13 +3,13 @@
  
 ( wet -> dry ) : airdry              --> rule --> statement
 ( dry -> wet ) : rain 	
-(wet -> frozen) : freeze
+(wet -> frozen) : dry_the_wet - freeze
 (frozen -> wet) : met
 
 start as wet						--> start --> statement
 exit 1 when wet						
 exit 0 when dry							--> exit
-when - dry the wet : someexternalevent	--> hook --> statement
+when - dry_the_wet : someexternalevent	--> hook --> statement
 
 
 grammar:

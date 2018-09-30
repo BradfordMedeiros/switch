@@ -3,10 +3,10 @@ package common
 // typical filter function found in many languages
 
 func Filter(filterString string, filter func(rune) bool) string {
-	runes := make([]rune, len(filterString))
-	for _, rune := range(filterString){
-		if filter(rune) {
-			runes = append(runes, rune)
+	runes := make([]rune, 0)
+	for _, runeValue := range(filterString){
+		if filter(runeValue) {
+			runes = append(runes, runeValue)
 		}
 	}
 	return string(runes)

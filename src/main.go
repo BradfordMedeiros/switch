@@ -31,7 +31,6 @@ func createBackendForProgram(programStructure parse_program.ProgramStructure) st
 
 func main(){
 	options := parse_args.ParseArgs(os.Args[1:])
-	fmt.Println(options)
 
 	programStructure := parse_program.ProgramStructure { Valid: false }
 	if options.ScriptPath.HasScript {

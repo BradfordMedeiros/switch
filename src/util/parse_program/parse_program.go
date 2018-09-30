@@ -58,10 +58,7 @@ func parseStatement(token Token)(Unit, bool){
 
 
 func ParseProgram(program string) ProgramStructure {
-	fmt.Println("parse program--------")
-
 	tokens := tokenize(program)
-
 	units := make([]Unit, len(tokens))
 	for _, token := range(tokens){
 		unit, isValid := parseStatement(token)
@@ -69,7 +66,6 @@ func ParseProgram(program string) ProgramStructure {
 			fmt.Println("invalid program! exiting: (", token.value, ")")
 			return  ProgramStructure { Valid: false, Units: units }
 		}
-		fmt.Println("! found valid element: ", unit.unitType)
 		units = append(units, unit)
 	}
 
