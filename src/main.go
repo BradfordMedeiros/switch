@@ -11,10 +11,10 @@ import "./util/query"
 import "./util/statemachine"
 import "./util/parse_program"
 import "./util/parse_program/util/types"
+import "./util/event_actions"
 
 func getHasEvent(hooks []types.Hook) (getEventForLabel func(types.Rule) (bool, string)){
 	doGetEventForLabel := func(rule types.Rule) (bool, string){
-		fmt.Println("--")
 		for _, hook := range(hooks) {
 			if hook.Label == rule.Label {
 				return true, hook.Event
@@ -89,13 +89,8 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 		programStructure.Hooks,
 		programStructure.Rules, 
 		programStructure.Exits,
-		func(event string) {
-			fmt.Println("call label (should be event): ", event)
-		},
-		func(code int){
-			fmt.Println("exit with code: ", code)
-			os.Exit(code)
-		},
+		event_actions.PublishEvent,
+		event_actions.ExitProgram,
 	))
 
 	for _, rule := range(programStructure.Rules){
@@ -106,9 +101,8 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 		err := machine.ForceTransitionState(programStructure.Start.State)
 		if err != nil {
 			fmt.Println("error from starting")
+			// maybe think of exit code to distinguish internal vs user program
 			os.Exit(1)
-		}else{
-			fmt.Println("start is good")
 		}
 	}
 	

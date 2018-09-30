@@ -74,7 +74,6 @@ func ParseProgram(program string) Program{
 	hooks := make([]types.Hook, 0)		// todo hooks
 	exits := make([]types.Exit, 0)
 
-	fmt.Println("num tokens: ", len(tokens))
 	for _, token := range(tokens){
 		unit, isValid := parseStatement(token)
 		
