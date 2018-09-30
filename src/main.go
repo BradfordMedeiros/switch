@@ -10,6 +10,7 @@ import "./util/input"
 import "./util/query"
 import "./util/statemachine"
 import "./util/parse_program"
+import "./util/parse_program/util/types"
 
 func readFile(filepath string) string{
 	b, err := ioutil.ReadFile(filepath) 
@@ -19,13 +20,22 @@ func readFile(filepath string) string{
     return string(b)
 }
 
+func getHandleHookChange(hooks []types.Hook) func(string) {
+	hookChange := func(hook string) {
+		fmt.Println("hook change: ", hook)
+	}
+	return hookChange
+}
+
 func createBackendForProgram(programStructure parse_program.Program) (statemachine.StateMachine, error) {
 	if !programStructure.Valid {
 		return statemachine.StateMachine{}, errors.New("invalid program structure")
 	}
 
+	hookChange := getHandleHookChange(programStructure.Hooks)
+
 	machine := statemachine.New(func(newstate string) {
-		fmt.Println("statechange: ", newstate)
+		hookChange(newstate)
 	})
 
 	for _, rule := range(programStructure.Rules){
