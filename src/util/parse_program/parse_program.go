@@ -60,6 +60,9 @@ func parseStatement(token Token)(Unit, bool){
 	return Unit { UnitType: "none" }, false
 }
 
+
+// @todo make sure we do not have duplicate rules, states, etc 
+// output from here
 func ParseProgram(program string) Program{
 	tokens := tokenize(program)
 

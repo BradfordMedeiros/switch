@@ -4,8 +4,8 @@ import "strconv"
 import "./common"
 
 type Exit struct {
-	state string
-	exitcode int
+	State string
+	Exitcode int
 }
 
 // exit 0 when somestate
@@ -31,6 +31,6 @@ func TryParseExit(value string) (Exit, bool){
 		return Exit{}, false
 	}
 
-	return Exit { state: values[2], exitcode: exitcode }, true
+	return Exit { State: values[3], Exitcode: exitcode }, true
 	return Exit { }, false
 }

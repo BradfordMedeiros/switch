@@ -5,10 +5,10 @@ import "errors"
 type StateMachine struct {
 	statelessmachine statelessmachine.StatelessMachine
 	currentState *string
-	onStateChanged func(string)
+	onStateChanged func(string, string)
 } 
 
-func New(onStateChanged func(string)) StateMachine{
+func New(onStateChanged func(string, string)) StateMachine{
 	return StateMachine { 
 		statelessmachine: statelessmachine.New(),
 		currentState: nil,
@@ -40,8 +40,9 @@ func (machine *StateMachine) Transition(transitionName string) error {
 	}
 	if hasTransition {
 		stateName, _ := machine.statelessmachine.GetStateForTransition(*machine.currentState, transitionName)
+		lastState := *machine.currentState
 		machine.currentState = &stateName
-		machine.onStateChanged(*machine.currentState)
+		machine.onStateChanged(lastState, *machine.currentState)
 	}else{
 		return errors.New("no transition of that type " + transitionName + " for " + *machine.currentState)
 	}
