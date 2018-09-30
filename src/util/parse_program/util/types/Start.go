@@ -6,8 +6,8 @@ type Start struct {
 	state string
 }
 
+// start as somestate
 func TryParseStart(value string) (Start, bool){
-	//index := common.IndexOf(value, "start")
 	values := strings.Split(value, " ")
 	values = common.FilterArray(values, func(val string) bool {
 		return val != " "
