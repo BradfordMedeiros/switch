@@ -24,7 +24,6 @@ func tokenize(program string) []Token {
 	for _, line := range(lines){
 		lineToAdd := strings.Trim(line, " ")
 		if len(lineToAdd) > 0 {
-			fmt.Println(lineToAdd)
 			tokens = append(tokens, Token { value: lineToAdd })
 		}
 	}
@@ -67,10 +66,10 @@ func ParseProgram(program string) ProgramStructure {
 	for _, token := range(tokens){
 		unit, isValid := parseStatement(token)
 		if !isValid {
-			fmt.Println("invalid program! exiting")
-			fmt.Println("--> ", token.value)
+			fmt.Println("invalid program! exiting: (", token.value, ")")
 			return  ProgramStructure { Valid: false, Units: units }
 		}
+		fmt.Println("! found valid element: ", unit.unitType)
 		units = append(units, unit)
 	}
 
