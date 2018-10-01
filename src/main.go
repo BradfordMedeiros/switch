@@ -51,6 +51,8 @@ func generateHookChangeMap(rules []types.Rule, hooks []types.Hook) map[string]ma
 	return hookchange
 }
 
+
+// this probably should be moved to parse_program 
 func getHandleHookChange(
 	hooks []types.Hook, 
 	rules []types.Rule, 
@@ -113,6 +115,7 @@ func main(){
 	options := parse_args.ParseArgs(os.Args[1:])
 	programStructure := parse_program.Program { Valid: false }
 
+
 	if options.ScriptPath.HasScript && options.InlineScript.HasScript {
 		fmt.Println("invalid options")
 		os.Exit(1)
@@ -126,6 +129,35 @@ func main(){
 		os.Exit(1)
 	}
 
+
+
+	if options.Dump {
+		event_actions.Dump(func() string {
+			return programStructure.Start.AsString()
+		}, func() string {
+			eventActions := ""
+			for _, exit := range(programStructure.Exits){
+				eventActions = eventActions + exit.AsString()
+			}
+			return eventActions
+
+		}, func() string {
+			eventActions := ""
+			for _, rule := range(programStructure.Rules){
+				eventActions = eventActions + rule.AsString()
+			}
+			return eventActions
+		}, func() string {
+			eventActions := ""
+			for _, hook := range(programStructure.Hooks){
+				eventActions = eventActions + hook.AsString()
+			}
+			return eventActions
+
+		})
+		os.Exit(0)
+	}
+	
 	machine, err := createBackendForProgram(programStructure)
 	if err != nil {
 		fmt.Println("program is invalid!!!!!!: ", err)

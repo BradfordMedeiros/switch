@@ -21,3 +21,7 @@ func TryParseHook(value string) (Hook, bool){
 
 	return Hook { Label: values[1], Event: values[2] }, true
 }
+
+func (hook *Hook) AsString() string{
+	return "hook placeholder"
+}

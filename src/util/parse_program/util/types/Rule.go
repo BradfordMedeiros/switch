@@ -76,3 +76,7 @@ func TryParseRule(value string) (Rule, bool){
 	}
 	return rule, true
 }
+
+func (rule *Rule) AsString() string{
+	return "rule placeholder"
+}
