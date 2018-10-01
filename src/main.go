@@ -112,6 +112,7 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 func main(){
 	options := parse_args.ParseArgs(os.Args[1:])
 
+
 	programStructure := parse_program.Program { Valid: false }
 	if options.ScriptPath.HasScript {
 		fileContentBytes, _ := ioutil.ReadFile(options.ScriptPath.ScriptPath)
@@ -127,6 +128,7 @@ func main(){
 		machine.GetState, 
 		machine.GetTransitions,
 		machine.Transition,
+		true,
 	)
 
 	commandChannel := make(chan string) 

@@ -8,11 +8,8 @@ package input
 
 import "bufio"
 import "os"
-import "fmt"
 
 func StartRepl (commandChannel chan string) {
-	fmt.Println("Switch 1.0.0")
-	fmt.Println("---------------------")
 	scanner := bufio.NewScanner(os.Stdin)
 	for true {
 		scanner.Scan()

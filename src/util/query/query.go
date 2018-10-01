@@ -2,11 +2,13 @@ package query
 
 import "fmt"
 import "strings"
+import "errors"
 
 func GetHandleQuery(
 	getState func() (string, error), 
 	getTransitions func() ([]string, error),
 	transition func(string) error,
+	printResponse bool,
 ) func(string){
 	return func(mainQueryString string){
 		parts := strings.Split(mainQueryString, " ")
@@ -23,6 +25,10 @@ func GetHandleQuery(
 			transitions, _ := getTransitions()
 			fmt.Println(transitions)
 		}else if (queryString == ":m" || queryString == "move"){
+			if len(parts) < 2 {
+				fmt.Println("error: ", errors.New("no transition specified"))
+				return
+			}
 			transitionState := parts[1]
 			err := transition(transitionState)
 			if err != nil {
