@@ -27,5 +27,5 @@ func TryParseStart(value string) (Start, bool){
 }
 
 func (start *Start) AsString() string{
-	return "start placeholder"
+	return "START " + start.State
 }

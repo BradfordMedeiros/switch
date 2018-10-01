@@ -36,5 +36,5 @@ func TryParseExit(value string) (Exit, bool){
 }
 
 func (exit *Exit) AsString() string{
-	return "exit placeholder"
+	return "EXIT " + "state:" + exit.State + "|exit:" + strconv.Itoa(exit.Exitcode)
 }

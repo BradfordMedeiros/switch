@@ -23,5 +23,5 @@ func TryParseHook(value string) (Hook, bool){
 }
 
 func (hook *Hook) AsString() string{
-	return "hook placeholder"
+	return "HOOK label:" + hook.Label + "|" + "event:" + hook.Event 
 }

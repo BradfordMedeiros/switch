@@ -133,24 +133,24 @@ func main(){
 
 	if options.Dump {
 		event_actions.Dump(func() string {
-			return programStructure.Start.AsString()
+			return programStructure.Start.AsString() + "\n"
 		}, func() string {
 			eventActions := ""
 			for _, exit := range(programStructure.Exits){
-				eventActions = eventActions + exit.AsString()
+				eventActions = eventActions + exit.AsString() + "\n"
 			}
 			return eventActions
 
 		}, func() string {
 			eventActions := ""
 			for _, rule := range(programStructure.Rules){
-				eventActions = eventActions + rule.AsString()
+				eventActions = eventActions + rule.AsString() + "\n"
 			}
 			return eventActions
 		}, func() string {
 			eventActions := ""
 			for _, hook := range(programStructure.Hooks){
-				eventActions = eventActions + hook.AsString()
+				eventActions = eventActions + hook.AsString() + "\n"
 			}
 			return eventActions
 
