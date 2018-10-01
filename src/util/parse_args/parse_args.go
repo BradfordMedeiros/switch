@@ -10,12 +10,17 @@ import "flag"
 
 type Options struct {
 	ScriptPath ScriptPath;
+    InlineScript InlineScript;
 }
-
 type ScriptPath struct {
 	HasScript bool;
 	ScriptPath string;
 }
+type InlineScript struct {
+    HasScript bool;
+    InlineScriptContent string;
+}
+
 func (i *ScriptPath) String() string {
     return i.ScriptPath
 }
@@ -29,6 +34,19 @@ func (i *ScriptPath) Set(value string) error {
     return nil
 }
 
+func (i *InlineScript) String() string {
+    return i.InlineScriptContent
+}
+func (i *InlineScript) Set(value string) error {
+    i.InlineScriptContent= value
+    if value == "" {
+        i.HasScript = false
+    }else{
+        i.HasScript = true
+    }
+    return nil
+}
+
 
 func ParseArgs(arguments []string) Options{
 	fs := flag.NewFlagSet("main", flag.ExitOnError)
@@ -36,7 +54,14 @@ func ParseArgs(arguments []string) Options{
     var myScriptPath ScriptPath
     fs.Var(&myScriptPath, "f", "program to run")
 
+    var myInlineScript InlineScript
+    fs.Var(&myInlineScript, "i", "inline script")
+
     fs.Parse(arguments)
-    return Options { ScriptPath: myScriptPath }
+    return Options { 
+        ScriptPath: myScriptPath,
+        InlineScript: myInlineScript,
+
+    }
 }
 

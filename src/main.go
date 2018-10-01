@@ -114,9 +114,18 @@ func main(){
 
 
 	programStructure := parse_program.Program { Valid: false }
-	if options.ScriptPath.HasScript {
+
+	if options.ScriptPath.HasScript && options.InlineScript.HasScript {
+		fmt.Println("invalid options")
+		os.Exit(1)
+	}else if options.ScriptPath.HasScript {
 		fileContentBytes, _ := ioutil.ReadFile(options.ScriptPath.ScriptPath)
 		programStructure = parse_program.ParseProgram(string(fileContentBytes))
+	}else if options.InlineScript.HasScript {
+		programStructure = parse_program.ParseProgram(options.InlineScript.InlineScriptContent)
+	}else{
+		fmt.Println("no options specified")
+		os.Exit(1)
 	}
 
 	machine, err := createBackendForProgram(programStructure)
@@ -132,13 +141,12 @@ func main(){
 	)
 
 	commandChannel := make(chan string) 
-		go input.StartRepl(commandChannel)
-		for true {
-			select {
-				case commandString := <-commandChannel: {
-					handleQuery(commandString)
-				}
-
+	go input.StartRepl(commandChannel)
+	for true {
+		select {
+			case commandString := <-commandChannel: {
+				handleQuery(commandString)
 			}
 		}
+	}
 }
