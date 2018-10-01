@@ -8,8 +8,14 @@ func GetHandleQuery(
 	getState func() (string, error), 
 	getTransitions func() ([]string, error),
 	transition func(string) error,
-	printResponse bool,
+	transitionsOnly bool,
 ) func(string){
+	if transitionsOnly {
+		return func(mainQueryString string) {
+			transition(mainQueryString)
+		}
+	}
+
 	return func(mainQueryString string){
 		parts := strings.Split(mainQueryString, " ")
 		queryString := parts[0]

@@ -11,6 +11,7 @@ import "flag"
 type Options struct {
 	ScriptPath ScriptPath;
     InlineScript InlineScript;
+    RestrictTransition bool;
 }
 type ScriptPath struct {
 	HasScript bool;
@@ -57,11 +58,13 @@ func ParseArgs(arguments []string) Options{
     var myInlineScript InlineScript
     fs.Var(&myInlineScript, "i", "inline script")
 
+    restrictTransition := fs.Bool("t", false, "restrict input to transition only")
     fs.Parse(arguments)
+
     return Options { 
         ScriptPath: myScriptPath,
         InlineScript: myInlineScript,
-
+        RestrictTransition: *restrictTransition,
     }
 }
 

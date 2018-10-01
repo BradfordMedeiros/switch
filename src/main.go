@@ -111,8 +111,6 @@ func createBackendForProgram(programStructure parse_program.Program) (statemachi
 
 func main(){
 	options := parse_args.ParseArgs(os.Args[1:])
-
-
 	programStructure := parse_program.Program { Valid: false }
 
 	if options.ScriptPath.HasScript && options.InlineScript.HasScript {
@@ -137,7 +135,7 @@ func main(){
 		machine.GetState, 
 		machine.GetTransitions,
 		machine.Transition,
-		true,
+		options.RestrictTransition,
 	)
 
 	commandChannel := make(chan string) 

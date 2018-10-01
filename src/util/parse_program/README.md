@@ -9,7 +9,8 @@
 start as wet						--> start --> statement
 exit 1 when wet						
 exit 0 when dry							--> exit
-when - dry_the_wet : someexternalevent	--> hook --> statement
+
+when - dry_the_wet - someexternalevent	
 
 
 grammar:

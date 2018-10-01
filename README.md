@@ -7,7 +7,7 @@
 (dry => wet) - dry the wet : rain
 
 
-when - dry the wet : someexternalevent
+when - dry the wet - someexternalevent
 
 
 
