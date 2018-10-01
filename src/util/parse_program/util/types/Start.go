@@ -25,3 +25,7 @@ func TryParseStart(value string) (Start, bool){
 
 	return Start{ State: values[2] }, true
 }
+
+func (start *Start) AsString() string{
+	return "START " + start.State
+}

@@ -34,3 +34,7 @@ func TryParseExit(value string) (Exit, bool){
 	return Exit { State: values[3], Exitcode: exitcode }, true
 	return Exit { }, false
 }
+
+func (exit *Exit) AsString() string{
+	return "EXIT " + "state:" + exit.State + "|exit:" + strconv.Itoa(exit.Exitcode)
+}

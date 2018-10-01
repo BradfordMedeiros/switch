@@ -12,6 +12,7 @@ type Options struct {
 	ScriptPath ScriptPath;
     InlineScript InlineScript;
     RestrictTransition bool;
+    Dump bool;
 }
 type ScriptPath struct {
 	HasScript bool;
@@ -59,12 +60,15 @@ func ParseArgs(arguments []string) Options{
     fs.Var(&myInlineScript, "i", "inline script")
 
     restrictTransition := fs.Bool("t", false, "restrict input to transition only")
+    shouldDump := fs.Bool("d", false, "dump syntax tree output")
+    
     fs.Parse(arguments)
 
     return Options { 
         ScriptPath: myScriptPath,
         InlineScript: myInlineScript,
         RestrictTransition: *restrictTransition,
+        Dump: *shouldDump,
     }
 }
 

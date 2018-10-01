@@ -76,3 +76,7 @@ func TryParseRule(value string) (Rule, bool){
 	}
 	return rule, true
 }
+
+func (rule *Rule) AsString() string{
+	return "RULE from:" + rule.FromState + "|to:" + rule.ToState + "|transition:" + rule.Transition + "|label:" + rule.Label 
+}
