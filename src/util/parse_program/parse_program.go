@@ -25,7 +25,9 @@ type Program struct {
 
 func tokenize(program string) []Token {
 	tokens := make([]Token, 0)
-	lines := strings.Split(program, "\n")
+	lines := strings.FieldsFunc(program, func(char rune) bool { 
+		return (char == ';' || char =='\n')    // maybe should support \n ?  maybe -e like echo? newline works, but not \n character
+	})
 
 	for _, line := range(lines){
 		lineToAdd := strings.Trim(line, " ")
