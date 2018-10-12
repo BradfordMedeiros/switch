@@ -17,13 +17,6 @@ func GetHandleQuery(
 				fmt.Println(err)  // @todo output to stderr
 				return
 			}
-
-			state, err := getState()
-			if err != nil {
-				fmt.Println(err)
-			}else{
-				fmt.Println(state)
-			}
 		}
 	}
 
@@ -50,14 +43,6 @@ func GetHandleQuery(
 			err := transition(transitionState)
 			if err != nil {
 				fmt.Println("error ", err) // @todo output to stderr
-				return
-			}
-
-			state, err := getState()
-			if err != nil {
-				fmt.Println(err)
-			}else{
-				fmt.Println("new state: ", state)
 			}
 		}else{
 			fmt.Println("unknown query " + queryString)
