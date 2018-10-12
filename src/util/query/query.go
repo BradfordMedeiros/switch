@@ -12,7 +12,18 @@ func GetHandleQuery(
 ) func(string){
 	if transitionsOnly {
 		return func(mainQueryString string) {
-			transition(mainQueryString)
+			err := transition(mainQueryString)
+			if err != nil {
+				fmt.Println(err)  // @todo output to stderr
+				return
+			}
+
+			state, err := getState()
+			if err != nil {
+				fmt.Println(err)
+			}else{
+				fmt.Println(state)
+			}
 		}
 	}
 
@@ -23,7 +34,7 @@ func GetHandleQuery(
 		if (queryString == ":s" || queryString == ":state"){
 			state, error := getState()
 			if error != nil {
-				fmt.Println(error)
+				fmt.Println(error)  // @todo output to stderr
 				return
 			}
 			fmt.Println(state)
@@ -38,9 +49,15 @@ func GetHandleQuery(
 			transitionState := parts[1]
 			err := transition(transitionState)
 			if err != nil {
-				fmt.Println("error ", err)
+				fmt.Println("error ", err) // @todo output to stderr
+				return
+			}
+
+			state, err := getState()
+			if err != nil {
+				fmt.Println(err)
 			}else{
-				fmt.Println("ok")
+				fmt.Println("new state: ", state)
 			}
 		}else{
 			fmt.Println("unknown query " + queryString)
